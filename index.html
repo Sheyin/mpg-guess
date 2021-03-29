@@ -1,0 +1,169 @@
+<html>
+	<head>
+		<title>Some guesser</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+
+	<body>
+
+		MGP guessing chances! <br />
+
+		<div class="main-container">
+			<div class="board-layout">
+				<div class="arrow-tally-column">
+					<div class="arrow-box" id="arrow-1-2-3">1-2-3<img src="arrow.jpg" class="arrow" id="1-2-3"></div>
+					<div class="arrow-box" id="arrow-4-5-6">4-5-6<img src="arrow.jpg" class="arrow" id="4-5-6"></div>
+					<div class="arrow-box" id="arrow-7-8-9">7-8-9<img src="arrow.jpg" class="arrow" id="7-8-9"></div>
+				</div>
+
+				<div class="arrow-tally-row">
+					<div class="arrow-box" id="arrow-1-5-9">1-5-9<img src="arrow.jpg" class="arrow" id="1-5-9"></div>
+					<div class="arrow-box" id="arrow-1-4-7">1-4-7<img src="arrow.jpg" class="arrow" id="1-4-7"></div>
+					<div class="arrow-box" id="arrow-2-5-8">2-5-8<img src="arrow.jpg" class="arrow" id="2-5-8"></div>
+					<div class="arrow-box" id="arrow-3-6-9">3-6-9<img src="arrow.jpg" class="arrow" id="3-6-9"></div>
+					<div class="arrow-box" id="arrow-3-5-7">3-5-7<img src="arrow.jpg" class="arrow" id="3-5-7"></div>
+				</div>
+
+				<div class="gameboard">
+					<div class="tile" id="tile1"><input type="number" min="1" max="9" class="number" id="input1" onblur="isUpdated(this)"></input></div>
+					<div class="tile" id="tile2"><input type="number" min="1" max="9" class="number" id="input2" onblur="isUpdated(this)"></input></div>
+					<div class="tile" id="tile3"><input type="number" min="1" max="9" class="number" id="input3" onblur="isUpdated(this)"></input></div>
+					
+					<div class="tile" id="tile4"><input type="number" min="1" max="9" class="number" id="input4" onblur="isUpdated(this)"></input></div>
+					<div class="tile" id="tile5"><input type="number" min="1" max="9" class="number" id="input5" onblur="isUpdated(this)"></input></div>
+					<div class="tile" id="tile6"><input type="number" min="1" max="9" class="number" id="input6" onblur="isUpdated(this)"></input></div>
+					
+					<div class="tile" id="tile7"><input type="number" min="1" max="9" class="number" id="input7" onblur="isUpdated(this)"></input></div>
+					<div class="tile" id="tile8"><input type="number" min="1" max="9" class="number" id="input8" onblur="isUpdated(this)"></input></div>
+					<div class="tile" id="tile9"><input type="number" min="1" max="9" class="number" id="input9" onblur="isUpdated(this)"></input></div>
+				</div>
+
+				
+				<div class="total sum-row">
+					<div class="sum" id="sum1-4-7"></div>
+					<div class="sum" id="sum2-5-8"></div>
+					<div class="sum" id="sum3-6-9"></div>
+				</div>
+
+				<div class="total sum-column">
+					<div class="sum" id="sum7-5-3"></div>
+					<div class="sum" id="sum1-2-3"></div>
+					<div class="sum" id="sum4-5-6"></div>
+					<div class="sum" id="sum7-8-9"></div>
+					<div class="sum" id="sum1-5-9"></div>
+				</div>
+
+				<div class="buttons">
+					<button id="submit3">Submit Starting Values</button>
+				</div>
+			</div>
+
+			<div class="payout">
+				<table>
+					<tr>
+						<th>Sum</th>
+						<th>MGP</th>
+					</tr>
+
+					<tr>
+						<td id="sum6">6</td>
+						<td id="pay6" class="payout">10,000</td>
+					</tr>
+
+					<tr>
+						<td id="sum7">7</td>
+						<td id="pay7" class="payout">36</td>
+					</tr>
+
+					<tr>
+						<td id="sum8">8</td>
+						<td id="pay8" class="payout">720</td>
+					</tr>
+
+					<tr>
+						<td id="sum9">9</td>
+						<td id="pay9" class="payout">360</td>
+					</tr>
+
+					<tr>
+						<td id="sum10">10</td>
+						<td id="pay10" class="payout">80</td>
+					</tr>
+
+					<tr>
+						<td id="sum11">11</td>
+						<td id="pay11" class="payout">252</td>
+					</tr>
+					<tr>
+						<td id="sum12">12</td>
+						<td id="pay12" class="payout">108</td>
+					</tr>
+
+					<tr>
+						<td id="sum13">13</td>
+						<td id="pay13" class="payout">72</td>
+					</tr>
+
+					<tr>
+						<td id="sum14">14</td>
+						<td id="pay614" class="payout">54</td>
+					</tr>
+
+					<tr>
+						<td id="sum15">15</td>
+						<td id="pay15" class="payout">180</td>
+					</tr>
+
+					<tr>
+						<td id="sum16">16</td>
+						<td>72</td>
+					</tr>
+
+					<tr>
+						<td id="sum17">17</td>
+						<td>180</td>
+					</tr>
+
+					<tr>
+						<td id="sum18">18</td>
+						<td>119</td>
+					</tr>
+
+					<tr>
+						<td id="sum19">19</td>
+						<td>36</td>
+					</tr>
+
+					<tr>
+						<td id="sum20">20</td>
+						<td>306</td>
+					</tr>
+
+					<tr>
+						<td id="sum21">21</td>
+						<td>1,080</td>
+					</tr>
+
+					<tr>
+						<td id="sum22">22</td>
+						<td>144</td>
+					</tr>
+
+					<tr>
+						<td id="sum23">23</td>
+						<td>1,800</td>
+					</tr>
+
+					<tr>
+						<td id="sum24">24</td>
+						<td>3,600</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+
+		<script src="script.js"></script>
+	</body>
+
+</html>

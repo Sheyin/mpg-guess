@@ -1,0 +1,24 @@
+.gameboard {
+	width: 100px;
+	height: 100px;
+	display: grid;
+	grid-template-rows: 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr;
+	margin-top: 20px;
+	margin-right: 50px;
+}
+
+.main-container {
+	display: flex;
+	flex-direction: row;
+}
+
+input {
+	width: 3ch;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
