@@ -4,19 +4,74 @@ const showEstimates = (event) => {
 	console.log(event.target.id);
 	const boxes=event.target.id.split('-');
 	console.log(boxes);
-	let total=0;
+	//let total=0;
+	let knownNumbers = [];
 	boxes.forEach((x) => {
 		let number = parseInt(document.getElementById("input" + x).value);
-		total += number ? number : 0;
+		knownNumbers.push(isNaN(number) ? 0 : number);
+		//total += number.isNaN ? 0 : number;
 	})
-	console.log("Total: " + total);
+	//console.log("Total: " + total);
+	// This should get the possible numbers for this row
+	const possibleNumbers = getPotentialNumbers(knownNumbers);
+	calculateSums(knownNumbers, possibleNumbers);
 }
 
 // Need event listeners for the arrows for click/hover events
 const arrowElements = document.getElementsByClassName('arrow');
 for (let i=0; i<arrowElements.length; i++) {
 	arrowElements[i].addEventListener('click', showEstimates);
+	// disabled for now since it is spamming the console
 	//arrowElements[i].addEventListener('mouseover', showEstimates);
+}
+
+// Takes an array of known numbers + array of potential numbers
+// Eliminate duplicates and returns possible numbers
+// expects two arrays of integers.
+function calculateSums(knownNumbers, possibleNumbers) {
+	const knownTotal = knownNumbers.reduce((accumulator, x) => accumulator += x)
+	let total = 0;
+	let slotsFree = 0;
+	knownNumbers.forEach((x) => {
+		total += x;
+		if (x === 0) {
+			slotsFree++;
+		}
+	})
+
+}
+
+// Takes a subtotal (may or may not be row total) and array of integers
+// Runs through possible results and returns an array of integers (sums)
+function possibleSum(subtotal, possibleNumbers) {
+	// This is prone to logical errors
+
+}
+
+
+
+// Helper function.  Numbers can only be used once, so this will help
+// calculate / eliminate rows if it is impossible to attain a given sum.
+// returns an array with valid numbers (for a row)
+// For consistency, though expects int array, will cast to ints and return an int array.
+function getPotentialNumbers(usedNumbers) {
+	let allNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+	let knownNumbers = usedNumbers.map(x => parseInt(x));
+	// fr every number in used Numbers
+	console.log("knownNumbers: " + knownNumbers);
+	let remainingNumbers = []
+	allNumbers.forEach(number => {
+		if (!knownNumbers.includes(number)) {
+			remainingNumbers.push(number);
+		}
+	})
+	console.log("remaining numbers: " + remainingNumbers);
+	return remainingNumbers;
+}
+
+// Get the payout from a given row (key is the sum of a row)
+function getPayout(sum) {
+
 }
 
 
