@@ -1,20 +1,22 @@
 
 // This should activate on hover or click of arrow for a given row
 const showEstimates = (event) => {
-	console.log(event.target.id);
+	//console.log(event.target.id);
 	const boxes=event.target.id.split('-');
-	console.log(boxes);
+	//console.log(boxes);
 	//let total=0;
 	let knownNumbers = [];
+	// gets the numbers for the selected row
 	boxes.forEach((x) => {
 		let number = parseInt(document.getElementById("input" + x).value);
 		knownNumbers.push(isNaN(number) ? 0 : number);
 		//total += number.isNaN ? 0 : number;
 	})
-	//console.log("Total: " + total);
-	// This should get the possible numbers for this row
-	const possibleNumbers = getPotentialNumbers(knownNumbers);
-	calculateSums(knownNumbers, possibleNumbers);
+	const possibleSums = calculateSums(knownNumbers);
+	console.log("possibleSums: " + possibleSums);
+
+	// Now that we know which sums to flag, hide and highlight some rows
+	highlightRows(possibleSums);
 }
 
 // Need event listeners for the arrows for click/hover events
@@ -28,24 +30,114 @@ for (let i=0; i<arrowElements.length; i++) {
 // Takes an array of known numbers + array of potential numbers
 // Eliminate duplicates and returns possible numbers
 // expects two arrays of integers.
-function calculateSums(knownNumbers, possibleNumbers) {
-	const knownTotal = knownNumbers.reduce((accumulator, x) => accumulator += x)
-	let total = 0;
+// This function is aware if there are more slots free to fill.
+// returns total, an array of possible sums of a row
+function calculateSums(knownNumbers) {
+	let subtotal = knownNumbers.reduce((accumulator, x) => accumulator += x);
 	let slotsFree = 0;
+	let total = [];
+
+	// This should get the possible numbers for this row
+	const unusedNumbers = getPotentialNumbers();
+	//console.log("knownNumbers @ calculate: " + knownNumbers);
 	knownNumbers.forEach((x) => {
-		total += x;
+		//subtotal += x;
 		if (x === 0) {
 			slotsFree++;
 		}
 	})
+	if (slotsFree == 0) {
+		// There will only be one result (the sum of the row)
+	}
+	switch(slotsFree) {
+		case 0:
+			// No slots free - all are known, return sum of row
+			total.push(subtotal);
+			break;
+		case 1:
+			// One slot free - iterate through once
+			total = possibleSum(unusedNumbers, subtotal);
+			break;
+		case 2:
+			total = iterateThroughTwoSlots(unusedNumbers, subtotal);
+			break;
+		case 3:
+			// Three slots free - could be anything BUT some numbers may be known
+			// in other rows.  So this serves to eliminate possibilities based on those numbers.
+			total = iterateThroughThreeSlots();
+			break;
+	}
+	// total is an array of possible sums of a row
+	//console.log("total: " + total);
+	return total;
+}
 
+
+// Helper function for calculateSums that helps with the permutations
+// uses possibleSum as well
+// Duplicated code, but much easier to conceptualize
+function iterateThroughThreeSlots() {
+	// first iteration: no real subtotal yet; anything other than knownNumbers is valid
+	let unusedNumbers = getPotentialNumbers();
+	let sums_with_duplicates = [];
+	
+	// now iterate through the known PLUS each one of the possible1 values
+	for(let i=0; i<unusedNumbers.length; i++) {
+		// if we say the known number is slot #1
+		// num here is the potential value of slot #2
+		let num = unusedNumbers.shift();
+		// So we have one "known" number and two slots free - use existing function and save totals
+		sums_with_duplicates = sums_with_duplicates.concat(iterateThroughTwoSlots(unusedNumbers, num));
+
+		// return number to the array for the next iteration
+		unusedNumbers.push(num);
+	}
+	//console.log("Unmodified results: " + sums_with_duplicates);
+	// Filter out duplicates
+	const setResults = new Set(sums_with_duplicates);
+	// Convert back to an array
+	const results = [...setResults];
+	return results;
+}
+
+
+// Helper function for calculateSums that helps with the permutations
+// uses possibleSum as well
+// Since iterateThroughThreeSlots uses this, it must be passed getPotentialNumbers/poss1
+// because what iterate3 sees is an imaginary number to be passed here
+function iterateThroughTwoSlots(unusedNumbers, subtotal) {
+	//console.log("unusedNumbers: " + unusedNumbers);
+	let sums_with_duplicates = [];
+	
+	// now iterate through the known PLUS each one of the possible1 values
+	for(let i=0; i<unusedNumbers.length; i++) {
+		// if we say the known number is slot #1
+		// num here is the potential value of slot #2
+		let num = unusedNumbers.shift();
+
+		// This produces an array of sums with one slot free still 
+		// #3 is in "usedNumbers" so this should be the final result
+		let sub1 = possibleSum(unusedNumbers, subtotal + num);
+		sums_with_duplicates = sums_with_duplicates.concat(sub1);
+		
+		// return number to the array for the next iteration
+		unusedNumbers.push(num);
+	}
+
+	// Filter out duplicates
+	const setResults = new Set(sums_with_duplicates);
+	// Convert back to an array
+	const results = [...setResults];
+	//console.log("Unique results: " + results);
+	return results;
 }
 
 // Takes a subtotal (may or may not be row total) and array of integers
 // Runs through possible results and returns an array of integers (sums)
-function possibleSum(subtotal, possibleNumbers) {
-	// This is prone to logical errors
-
+// This does not care about the total number of slots (will be called repeatedly instead)
+function possibleSum(unusedNumbers, subtotal) {
+	possibleSums = unusedNumbers.map(number => subtotal + number);
+	return possibleSums;
 }
 
 
@@ -54,18 +146,20 @@ function possibleSum(subtotal, possibleNumbers) {
 // calculate / eliminate rows if it is impossible to attain a given sum.
 // returns an array with valid numbers (for a row)
 // For consistency, though expects int array, will cast to ints and return an int array.
-function getPotentialNumbers(usedNumbers) {
+function getPotentialNumbers() {
 	let allNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-	let knownNumbers = usedNumbers.map(x => parseInt(x));
+	//const usedNumbers = rowNumbers.map(x => parseInt(x)).concat(getUsedNumbers());
+	const usedNumbers = getUsedNumbers();
+	//console.log("usedNumbers: " + usedNumbers);
+	
 	// fr every number in used Numbers
-	console.log("knownNumbers: " + knownNumbers);
 	let remainingNumbers = []
 	allNumbers.forEach(number => {
-		if (!knownNumbers.includes(number)) {
+		if (!usedNumbers.includes(number)) {
 			remainingNumbers.push(number);
 		}
 	})
-	console.log("remaining numbers: " + remainingNumbers);
+	//console.log("remaining numbers: " + remainingNumbers);
 	return remainingNumbers;
 }
 
@@ -86,12 +180,14 @@ function isUpdated(inputBox) {
 	const number = parseInt(inputBox.value);
 
 	// should probably check also how many tiles have already been revealed
-	const numbers = getNumbersFromBoard();
+	const usedNumbers = getUsedNumbers();
+	//const numbers = getNumbersFromBoard();
 	if (didFindError(numbers, number)) {
 		inputBox.value = "";
 	}
 	else {
-		updateEstimates();
+		// I don't think this is needed?
+		//getUsedNumbers();
 	}
 	return;
 }
@@ -101,23 +197,26 @@ function isUpdated(inputBox) {
 
 // Update the estimates shown for each row
 // Should only be called after a value was entered and check was done at isUpdated
-function updateEstimates() {
+// this function might be antiquated - co-opted for new stuff but might break isUpdated
+// returns the numbers used on the grid?
+function getUsedNumbers() {
 	// note to self, grid is NOT an actual array
 	const grid = document.getElementsByClassName('number');
 	let numbers = [];
 	for(let i=0; i<grid.length; i++) {
 		let x = parseInt(grid[i].value);
-		numbers.push(Number.isInteger(x) ? x : "");
+		if (Number.isInteger(x)) {
+			numbers.push(x);
+		}
 	}
-
-	// Do the math
-	// Display totals on sides (and/or on hover?)
+	return numbers;
 }
 
-
+// This might be old and is really not needed anymore?
 // Gets the numbers from the board, leaving an empty string for null/invalid values.
 // Should be probably be called after isUpdated.
 // Returns an array of numbers and empty strings
+/*
 function getNumbersFromBoard() {
 	const grid = document.getElementsByClassName('number');
 	let numbers = [];
@@ -126,7 +225,7 @@ function getNumbersFromBoard() {
 		numbers.push(Number.isInteger(x) ? x : "");
 	}
 	return numbers;
-}
+} */
 
 
 
@@ -194,14 +293,32 @@ function updateErrorBox(content) {
 	return;
 }
 
+
+
+// Highlights specified rows (sums)
+// Accepts an array of integers, returns nothing
+function highlightRows(highlightedRows) {
+	//resetDisplay();
+	for(let rowNumber=6; rowNumber<25; rowNumber++) {
+		const row = document.getElementById('row' + rowNumber);
+		if (highlightedRows.includes(rowNumber)) {
+			row.classList = "highlighted";
+		}
+		else {
+			row.classList = "dimmed";
+		}
+	}
+	return;
+}
+
 function dimRowsUnusued() {
 	// dim the sums in the mgp listing that are unavailable for a particular row
 }
 
-function highlightBox() {
-	
-}
-
-function highlightRows() {
-
+// Removes the modifications from highlighting/dimming rows
+function resetDisplay() {
+	for(let i=6; i<25; i++) {
+		const row = document.getElementById('row' + i);
+		row.classList = "";
+	}
 }
