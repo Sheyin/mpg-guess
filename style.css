@@ -42,7 +42,7 @@ input {
 }
 
 .payout {
-	width: 30%;
+	max-width: 150px;
 	margin-left: 5%;
 }
 
@@ -63,11 +63,15 @@ img {
 	border-radius: 50%;
 }
 
+.main-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
 body {
 	background-color: #090908;
 	color: #090908;
-	display: flex;
-	justify-content: space-between;
 	padding: 5%;
 }
 

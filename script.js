@@ -1,16 +1,7 @@
-// Need event listeners for the arrows for click/hover events
-const arrowElements = document.getElementsByClassName('arrow');
-for (let i=0; i<arrowElements.length; i++) {
-	arrowElements[i].addEventListener('click', showEstimates);
-	// disabled for now since it is spamming the console
-	//arrowElements[i].addEventListener('mouseover', showEstimates);
-}
 
 // This should activate on hover or click of arrow for a given row
 const showEstimates = (event) => {
-
 	const boxes=event.target.id.split('-');
-
 	let knownNumbers = [];
 	// gets the numbers for the selected row
 	boxes.forEach((x) => {
@@ -18,9 +9,18 @@ const showEstimates = (event) => {
 		knownNumbers.push(isNaN(number) ? 0 : number);
 	})
 	const possibleSums = calculateSums(knownNumbers);
-
+	
 	// Now that we know which sums to flag, hide and highlight some rows
 	highlightRows(possibleSums);
+}
+
+
+// Need event listeners for the arrows for click/hover events
+const arrowElements = document.getElementsByClassName('arrow');
+for (let i=0; i<arrowElements.length; i++) {
+	arrowElements[i].addEventListener('click', showEstimates);
+	// disabled for now since it is spamming the console
+	//arrowElements[i].addEventListener('mouseover', showEstimates);
 }
 
 
@@ -219,7 +219,7 @@ function didFindError(numbers, lastValue) {
 
 	// See if there are too many revealed spaces
 	if (numbers.length > 4) {
-		updateErrorBox("Only 4 revealed numbers are allowed.  Please clear the board and try again.");
+		updateErrorBox("Only 4 revealed numbers are allowed at a time.");
 		errorFound = true;
 	}
 
