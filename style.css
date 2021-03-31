@@ -1,14 +1,13 @@
-.board-layout {
-}
-
 .gameboard {
+	width: 150px;
+	height: 120px;
 	display: grid;
-	grid-template-rows: 1fr 1fr 1fr;
-	grid-template-columns: 1fr 1fr 1fr;
-	width: 100px;
-	height: 100px;
-	margin-top: 20px;
-	margin-right: 50px;
+	grid-template-rows: 1fr 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	margin: 20px;
+	padding: 10px;
+	border: 1px solid #e9e2d9;
+	border-radius: 20px;
 }
 
 .main-container {
@@ -26,6 +25,45 @@
 
 input {
 	width: 3ch;
+	text-align: center;
+}
+
+.tile {
+	margin: auto;
+}
+
+.textbox {
+	background-color: #e9e2d9;
+	border-radius: 20px;
+}
+
+.payout {
+	width: 30%;
+	margin-left: 5%;
+}
+
+.introduction {
+	padding: 10px;
+}
+
+.left-side {
+	flex-grow: 2;
+}
+
+table {
+	padding: 10px;
+}
+
+img {
+	border-radius: 50%;
+}
+
+body {
+	background-color: #090908;
+	color: #090908;
+	display: flex;
+	justify-content: space-between;
+	padding: 5%;
 }
 
 input::-webkit-outer-spin-button,
