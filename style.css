@@ -28,6 +28,10 @@ input {
 	text-align: center;
 }
 
+#error-box {
+	color: red;
+}
+
 .tile {
 	margin: auto;
 }
@@ -47,7 +51,8 @@ input {
 }
 
 .left-side {
-	flex-grow: 2;
+	display: flex;
+	flex-direction: column;
 }
 
 table {

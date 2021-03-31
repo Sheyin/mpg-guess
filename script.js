@@ -1,24 +1,3 @@
-
-// This should activate on hover or click of arrow for a given row
-const showEstimates = (event) => {
-	//console.log(event.target.id);
-	const boxes=event.target.id.split('-');
-	//console.log(boxes);
-	//let total=0;
-	let knownNumbers = [];
-	// gets the numbers for the selected row
-	boxes.forEach((x) => {
-		let number = parseInt(document.getElementById("input" + x).value);
-		knownNumbers.push(isNaN(number) ? 0 : number);
-		//total += number.isNaN ? 0 : number;
-	})
-	const possibleSums = calculateSums(knownNumbers);
-	console.log("possibleSums: " + possibleSums);
-
-	// Now that we know which sums to flag, hide and highlight some rows
-	highlightRows(possibleSums);
-}
-
 // Need event listeners for the arrows for click/hover events
 const arrowElements = document.getElementsByClassName('arrow');
 for (let i=0; i<arrowElements.length; i++) {
@@ -27,11 +6,28 @@ for (let i=0; i<arrowElements.length; i++) {
 	//arrowElements[i].addEventListener('mouseover', showEstimates);
 }
 
+// This should activate on hover or click of arrow for a given row
+const showEstimates = (event) => {
+
+	const boxes=event.target.id.split('-');
+
+	let knownNumbers = [];
+	// gets the numbers for the selected row
+	boxes.forEach((x) => {
+		let number = parseInt(document.getElementById("input" + x).value);
+		knownNumbers.push(isNaN(number) ? 0 : number);
+	})
+	const possibleSums = calculateSums(knownNumbers);
+
+	// Now that we know which sums to flag, hide and highlight some rows
+	highlightRows(possibleSums);
+}
+
+
 // Takes an array of known numbers + array of potential numbers
 // Eliminate duplicates and returns possible numbers
-// expects two arrays of integers.
 // This function is aware if there are more slots free to fill.
-// returns total, an array of possible sums of a row
+// Returns an array of possible sums of a specified row
 function calculateSums(knownNumbers) {
 	let subtotal = knownNumbers.reduce((accumulator, x) => accumulator += x);
 	let slotsFree = 0;
@@ -39,16 +35,12 @@ function calculateSums(knownNumbers) {
 
 	// This should get the possible numbers for this row
 	const unusedNumbers = getPotentialNumbers();
-	//console.log("knownNumbers @ calculate: " + knownNumbers);
 	knownNumbers.forEach((x) => {
-		//subtotal += x;
 		if (x === 0) {
 			slotsFree++;
 		}
 	})
-	if (slotsFree == 0) {
-		// There will only be one result (the sum of the row)
-	}
+
 	switch(slotsFree) {
 		case 0:
 			// No slots free - all are known, return sum of row
@@ -68,14 +60,12 @@ function calculateSums(knownNumbers) {
 			break;
 	}
 	// total is an array of possible sums of a row
-	//console.log("total: " + total);
 	return total;
 }
 
 
-// Helper function for calculateSums that helps with the permutations
-// uses possibleSum as well
-// Duplicated code, but much easier to conceptualize
+// Three unknown slots, which means eliminate options not in this row
+// Requires no inputs and returns integers (potential sums) for this row.
 function iterateThroughThreeSlots() {
 	// first iteration: no real subtotal yet; anything other than knownNumbers is valid
 	let unusedNumbers = getPotentialNumbers();
@@ -83,7 +73,7 @@ function iterateThroughThreeSlots() {
 	
 	// now iterate through the known PLUS each one of the possible1 values
 	for(let i=0; i<unusedNumbers.length; i++) {
-		// if we say the known number is slot #1
+		// If we say the known number is slot #1
 		// num here is the potential value of slot #2
 		let num = unusedNumbers.shift();
 		// So we have one "known" number and two slots free - use existing function and save totals
@@ -92,7 +82,7 @@ function iterateThroughThreeSlots() {
 		// return number to the array for the next iteration
 		unusedNumbers.push(num);
 	}
-	//console.log("Unmodified results: " + sums_with_duplicates);
+
 	// Filter out duplicates
 	const setResults = new Set(sums_with_duplicates);
 	// Convert back to an array
@@ -102,11 +92,9 @@ function iterateThroughThreeSlots() {
 
 
 // Helper function for calculateSums that helps with the permutations
-// uses possibleSum as well
-// Since iterateThroughThreeSlots uses this, it must be passed getPotentialNumbers/poss1
+// Since iterateThroughThreeSlots uses this, it must be passed unusedNumbers
 // because what iterate3 sees is an imaginary number to be passed here
 function iterateThroughTwoSlots(unusedNumbers, subtotal) {
-	//console.log("unusedNumbers: " + unusedNumbers);
 	let sums_with_duplicates = [];
 	
 	// now iterate through the known PLUS each one of the possible1 values
@@ -141,25 +129,21 @@ function possibleSum(unusedNumbers, subtotal) {
 }
 
 
-
 // Helper function.  Numbers can only be used once, so this will help
 // calculate / eliminate rows if it is impossible to attain a given sum.
-// returns an array with valid numbers (for a row)
+// Returns an array with valid numbers (for a row)
 // For consistency, though expects int array, will cast to ints and return an int array.
 function getPotentialNumbers() {
 	let allNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 	//const usedNumbers = rowNumbers.map(x => parseInt(x)).concat(getUsedNumbers());
 	const usedNumbers = getUsedNumbers();
-	//console.log("usedNumbers: " + usedNumbers);
-	
-	// fr every number in used Numbers
+
 	let remainingNumbers = []
 	allNumbers.forEach(number => {
 		if (!usedNumbers.includes(number)) {
 			remainingNumbers.push(number);
 		}
 	})
-	//console.log("remaining numbers: " + remainingNumbers);
 	return remainingNumbers;
 }
 
@@ -172,33 +156,19 @@ function getPayout(sum) {
 // Called if a single tile was updated - check to see if it is a legal value
 // Clears value if it is not a legal value, else it leaves it and recalculates values
 function isUpdated(inputBox) {
-
-	// temporary!!! DELETE THIS LATER!!!!
-	return;
-
 	// Check for value legality
-	const number = parseInt(inputBox.value);
-
-	// should probably check also how many tiles have already been revealed
+	const lastValue = parseInt(inputBox.value);
 	const usedNumbers = getUsedNumbers();
-	//const numbers = getNumbersFromBoard();
-	if (didFindError(numbers, number)) {
+	if (didFindError(usedNumbers, lastValue)) {
 		inputBox.value = "";
-	}
-	else {
-		// I don't think this is needed?
-		//getUsedNumbers();
 	}
 	return;
 }
 
 
-
-
 // Update the estimates shown for each row
 // Should only be called after a value was entered and check was done at isUpdated
-// this function might be antiquated - co-opted for new stuff but might break isUpdated
-// returns the numbers used on the grid?
+// Returns the numbers used on the grid
 function getUsedNumbers() {
 	// note to self, grid is NOT an actual array
 	const grid = document.getElementsByClassName('number');
@@ -212,29 +182,15 @@ function getUsedNumbers() {
 	return numbers;
 }
 
-// This might be old and is really not needed anymore?
-// Gets the numbers from the board, leaving an empty string for null/invalid values.
-// Should be probably be called after isUpdated.
-// Returns an array of numbers and empty strings
-/*
-function getNumbersFromBoard() {
-	const grid = document.getElementsByClassName('number');
-	let numbers = [];
-	for(let i=0; i<grid.length; i++) {
-		let x = parseInt(grid[i].value);
-		numbers.push(Number.isInteger(x) ? x : "");
-	}
-	return numbers;
-} */
-
-
 
 // Check for errors (duplicates, too many revealed, etc)
 // Expects an array of numbers (probably from getNumbersFromBoard())
-// returns true (did find error) or false (no errors found)
+// Returns true (did find error) or false (no errors found)
+// This function also updates the error box
 function didFindError(numbers, lastValue) {
 	// Clear all the old errors
 	updateErrorBox("reset");
+	console.log(numbers);
 	let errorFound = false;
 
 	// Check if newest value is an actual number
@@ -251,15 +207,9 @@ function didFindError(numbers, lastValue) {
 
 	// Check if newest value is a duplicate value
 	let seenCount = 0;
-	let blankCount = 0;
 	for (i=0; i<numbers.length; i++) {
-		if (i === lastValue) {
+		if (numbers[i] === lastValue) {
 			seenCount++;
-		}
-		else {
-			if (i === "") {
-				blankCount++;
-			}
 		}
 	}
 	if (seenCount > 1) {
@@ -268,21 +218,19 @@ function didFindError(numbers, lastValue) {
 	}
 
 	// See if there are too many revealed spaces
-	if (blankCount > 4) {
-		updateErrorBox("Too many revealed spaces for the count to be realistic. (More than 4)");
+	if (numbers.length > 4) {
+		updateErrorBox("Only 4 revealed numbers are allowed.  Please clear the board and try again.");
 		errorFound = true;
 	}
 
-	// no errors - clear error box?
-	updateErrorBox("");
 	return errorFound;
 }
 
+
 // Some error was detected, inform user with cumulative error messages
-// should be called after didFindError as a helper function
-// Maybe this should call highlight as well?
+// Should be called after didFindError as a helper function
 function updateErrorBox(content) {
-	const errorBox = document.getElementById('errorBox');
+	const errorBox = document.getElementById('error-box');
 	if (content === "reset") {
 		errorBox.innerHTML = "";
 	}
@@ -298,7 +246,6 @@ function updateErrorBox(content) {
 // Highlights specified rows (sums)
 // Accepts an array of integers, returns nothing
 function highlightRows(highlightedRows) {
-	//resetDisplay();
 	for(let rowNumber=6; rowNumber<25; rowNumber++) {
 		const row = document.getElementById('row' + rowNumber);
 		if (highlightedRows.includes(rowNumber)) {
@@ -311,14 +258,19 @@ function highlightRows(highlightedRows) {
 	return;
 }
 
-function dimRowsUnusued() {
-	// dim the sums in the mgp listing that are unavailable for a particular row
-}
-
-// Removes the modifications from highlighting/dimming rows
-function resetDisplay() {
-	for(let i=6; i<25; i++) {
-		const row = document.getElementById('row' + i);
+// Resets the board and replaces all the numbers with blank spaces.
+function resetBoard() {
+	// Clear all the inputs
+	const grid = document.getElementsByClassName('number');
+	for(let i=0; i<grid.length; i++) {
+		grid[i].value = "";
+	}
+	// Clear the changes to the payout box
+	for(let rowNumber=6; rowNumber<25; rowNumber++) {
+		const row = document.getElementById('row' + rowNumber);
 		row.classList = "";
 	}
+	// Clear the error box
+	updateErrorBox("reset");
+	return;
 }
