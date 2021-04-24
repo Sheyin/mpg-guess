@@ -1,4 +1,4 @@
-"# mpg-guess" 
+__mpg-guess__
 
 Wrote this up as a little guiding tool for Final Fantasy 14's mini-cactpot minigame.  Enter the numbers as you have chosen them (or want to) to match what you have ingame, and it will add up and display possible sums for a given row.  
 
