@@ -1,18 +1,16 @@
 .gameboard {
-	width: 150px;
-	height: 120px;
+	width: 160px;
+	height: 140px;
 	display: grid;
 	grid-template-rows: 1fr 1fr 1fr 1fr;
 	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-	margin: 20px;
+	margin-top: 4px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 4px;
 	padding: 10px;
 	border: 1px solid #e9e2d9;
 	border-radius: 20px;
-}
-
-.main-container {
-	display: flex;
-	flex-direction: row;
 }
 
 .highlighted {
@@ -28,8 +26,16 @@ input {
 	text-align: center;
 }
 
+.controls {
+	margin-top: 4px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 #error-box {
 	color: red;
+	padding: 10px;
+	min-width: 200px;
 }
 
 .tile {
@@ -42,8 +48,7 @@ input {
 }
 
 .payout {
-	max-width: 150px;
-	margin-left: 5%;
+	width: 106px;
 }
 
 .introduction {
@@ -66,17 +71,88 @@ img {
 .main-container {
 	display: flex;
 	flex-direction: row;
-	justify-content: space-between;
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.container-child {
+	margin: 5px;
+}
+
+div {
+	box-sizing: border-box;
 }
 
 body {
 	background-color: #090908;
 	color: #090908;
-	padding: 5%;
+	padding: 1%;
+}
+
+.break {
+	flex-basis: 100%;
+	height: 0;
 }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
+}
+
+@media screen and (max-width: 599px) {
+	.main-container {
+		/*flex-direction: column; */
+		max-width: 99%;
+	}
+	.left-side {
+		max-width: 100%;
+	}
+	/*
+	#error-box {
+		display: block;
+		flex-basis: 100%;
+		min-width: 100%;
+	}
+	.payout {
+		order: 2;
+	} */
+}
+
+@media screen and (min-width: 600px) and (max-width: 734px) {
+	.main-container {
+		max-width: 90%;
+		margin: auto;
+		padding-top: 3%;
+	}
+
+	.left-side {
+		max-width: 100%;
+	}
+
+	/*
+	#error-box {
+		display: block;
+		flex-basis: 100%;
+		min-width: 100%;
+	}
+	.payout {
+		order: 2;
+	} */
+}
+
+@media screen and (min-width: 735px) {
+	.main-container {
+		margin: auto;
+		padding-top: 3%;
+	}
+
+	.left-side {
+		max-width: 50%;
+	}
+
+	.break {
+		display: hidden;
+		flex-basis: 0%;
+	}
 }

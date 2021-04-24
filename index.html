@@ -6,7 +6,7 @@
 
 	<body>
 		<div class="main-container">
-			<div class="left-side">
+			<div class="left-side container-child">
 				<div class="introduction textbox">
 					<h1>Mini-Cactpot Guessing Helper</h1>
 					This is a helper for the Mini-Cactpot game in Final Fantasy XIV's Gold Saucer.  It isn't really necessary to win - or lose - but 
@@ -42,11 +42,10 @@
 					<div class="tile" id="tile9"><input type="number" min="1" max="9" class="number" id="input9" onblur="isUpdated(this)" value="5"></input></div>
 					<div class="placeholder tile"></div>
 				</div>
-				<div class="controls"><button onClick="resetBoard()">Reset Board </div></button></div>
-				<div id="error-box" class="textbox"></div>
+				<div class="controls"><button onClick="resetBoard()">Reset Board </div></button>
 			</div>
 	
-			<div class="payout textbox">
+			<div class="payout textbox container-child">
 				<table>
 					<tr>
 						<th>Sum</th>
@@ -148,6 +147,10 @@
 					</tr>
 				</table>
 			</div>
+
+			<!-- <div class="break"></div> -->
+
+			<div id="error-box" class="textbox container-child"></div>
 		</div>
 
 		<script src="script.js"></script>
